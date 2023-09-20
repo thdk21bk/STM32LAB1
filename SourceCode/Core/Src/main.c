@@ -94,6 +94,7 @@ int main(void)
   while (1)
   {
 	  //EX1
+a
 
     /* USER CODE END WHILE */
 
