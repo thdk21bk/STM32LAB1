@@ -110,7 +110,7 @@ int main(void)
 		  setTimer1(200);
 		  setTimer2(200);
 	  }
-	  timerRun();
+	  timerRun(); //decrease counter, otherwise set flag=1
 	  HAL_Delay(10);
     /* USER CODE END WHILE */
 
