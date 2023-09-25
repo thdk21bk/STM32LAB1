@@ -276,14 +276,19 @@ int main(void)
 
   /* Infinite loop */
   setTimer1(300);
-  setTimer2(200);
-  setTimer3(300);
-  setTimer4(200);
   /* USER CODE BEGIN WHILE */
+  //state 1: (1) red 3s; (2) green 3s
+  //state 2: (1) red 2s; (2) yellow 2s
+  //state 3: (1) green 3s; (2) red 3s
+  //state 4: (1) yellow 2s; (2) red 2s
+  enum State{state1, state2, state3, state4};
+  enum State currentState=state1;
+  enum State nextState=currentState;
   while (1)
   {
 	  //ex5
-	  if(timer1_flag==0){
+	  switch (currentState) {
+	  case state1:
 		  HAL_GPIO_WritePin(LED_RED1_GPIO_Port, LED_RED1_Pin, RESET);
 		  HAL_GPIO_WritePin(LED_YELLOW1_GPIO_Port, LED_YELLOW1_Pin, SET);
 		  HAL_GPIO_WritePin(LED_GREEN1_GPIO_Port, LED_GREEN1_Pin, SET);
@@ -297,8 +302,12 @@ int main(void)
 			  display7SEG1(timer1_counter/100 +2); //red in 1st group count from 5
 			  display7SEG2(timer1_counter/100); //green in 2nd group
 		  }
-	  }
-	  else if(timer2_flag==0){
+		  if(timer1_flag ==1) {
+			  nextState=state2;
+			  setTimer2(200);
+		  }
+		  break;
+	  case state2:
 		  HAL_GPIO_WritePin(LED_RED1_GPIO_Port, LED_RED1_Pin, RESET);
 		  HAL_GPIO_WritePin(LED_YELLOW1_GPIO_Port, LED_YELLOW1_Pin, SET);
 		  HAL_GPIO_WritePin(LED_GREEN1_GPIO_Port, LED_GREEN1_Pin, SET);
@@ -312,8 +321,12 @@ int main(void)
 			  display7SEG1(timer2_counter/100); //red in 1st group continues from 2
 			  display7SEG2(timer2_counter/100); //yellow in 2nd group
 		  }
-	  }
-	  else if(timer3_flag==0){
+		  if(timer2_flag ==1) {
+			  nextState=state3;
+			  setTimer3(300);
+		  }
+		  break;
+	  case state3:
 		  HAL_GPIO_WritePin(LED_RED1_GPIO_Port, LED_RED1_Pin, SET);
 		  HAL_GPIO_WritePin(LED_YELLOW1_GPIO_Port, LED_YELLOW1_Pin, SET);
 		  HAL_GPIO_WritePin(LED_GREEN1_GPIO_Port, LED_GREEN1_Pin, RESET);
@@ -327,9 +340,14 @@ int main(void)
 			  display7SEG1(timer3_counter/100); //green in 1st group
 			  display7SEG2(timer3_counter/100 +2); //red in 2nd group
 		  }
+		  if(timer3_flag ==1) {
+			  nextState=state4;
+			  setTimer4(200);
+		  }
+		  break;
 
-	  }
-	  else if(timer4_flag==0){
+
+	 case state4:
 		  HAL_GPIO_WritePin(LED_RED1_GPIO_Port, LED_RED1_Pin, SET);
 		  HAL_GPIO_WritePin(LED_YELLOW1_GPIO_Port, LED_YELLOW1_Pin, RESET);
 		  HAL_GPIO_WritePin(LED_GREEN1_GPIO_Port, LED_GREEN1_Pin, SET);
@@ -343,16 +361,14 @@ int main(void)
 			  display7SEG1(timer4_counter/100); //yellow in 1st group
 			  display7SEG2(timer4_counter/100); //red continues from 2 in 2nd group
 		  }
+		  if(timer4_flag ==1) {
+			  nextState=state1;
+			  setTimer1(301);
+		  }
+		  break;
 	  }
-
 	  timerRun();
-	  if(timer1_flag==1&&timer2_flag==1&&timer3_flag==1&&timer4_flag==1){
-		  setTimer1(300);
-		  setTimer2(200);
-		  setTimer3(300);
-		  setTimer4(200);
-	  }
-
+	  currentState=nextState;
 	  HAL_Delay(10);
 
 
